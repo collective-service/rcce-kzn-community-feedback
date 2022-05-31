@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <!-- CSS only -->
+    <link rel="icon" href="https://www.rcce-collective.net/wp-content/uploads/2021/04/android-chrome-192x192-1.png" sizes="192x192" />
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ==" crossorigin="" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.19/css/jquery.dataTables.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/c3/0.7.11/c3.min.css" />
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
+    <link href="https://unpkg.com/multiple-select@1.5.2/dist/multiple-select.min.css" rel="stylesheet">
+
+    <!-- scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://kit.fontawesome.com/39e5643f1a.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/c3/0.7.11/c3.min.js"></script>
+    <script src="https://d3js.org/d3.v5.js"></script>
+    <script src="https://d3js.org/topojson.v1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.19/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.3/moment.min.js"></script>
+    <script src="https://unpkg.com/multiple-select@1.5.2/dist/multiple-select.min.js"></script>
+    <link href="css/feedbackStyles.css" rel="stylesheet" />
+    <title>Community Response Hub</title>
+
+</head>
+
+<body>
+    <!-- Header & Navigation Menu -->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigationPages">
+					<span class="navbar-toggler-icon"></span>
+					</button>
+                    <a class="navbar-brand" href="#" value="landing">
+                        <img src="assets/icons8-mind-map-90.png" alt="Communty Response Hub" height="30" /><strong>KZN  - 2022 Floods </strong>Community Feedback trends</a>
+
+                    <!-- <div class="collapse navbar-collapse" id="navigationPages">
+                        <ul class="navbar-nav ml-md-auto">
+                            <li class="nav-item navSite">
+                                <a class="nav-link " href="index.html" value="landing">Home</a>
+                            </li>
+                            <li class="nav-item navSite">
+                                <a class="nav-link context" href="situation.html" value="context">Situation</a>
+                            </li>
+                            <li class="nav-item navSite">
+                                <a class="nav-link coordination" href="coordination.html" value="behaviors">Coordination</a>
+                            </li>
+                            <li class="nav-item navSite">
+                                <a class="nav-link activities" href="activities.html" value="activities">Activities</a>
+                            </li>
+                            <li class="nav-item navSite">
+                                <a class="nav-link behaviors" href="behaviors.html" value="behaviors">Behaviors</a>
+                            </li>
+                            <li class="nav-item navSite">
+                                <a class="nav-link feedback" href="feedback.html">Feedbacks</a>
+                            </li>
+                            <li class="nav-item navSite">
+                                <a class="nav-link reports" href="reports.html" value="reports">Reports</a>
+                            </li>
+                        </ul>
+                    </div> -->
+
+                </nav>
+            </div>
+        </div>
+
+        <!-- Navigation to Landing page -->
+        <div class="row navPage" id="feedback">
+            <div class="loader">
+                <div class="sp sp-circle"></div>
+                Loading data...
+            </div>
+            <div class="col-md-12 feedback" id="main">
+
+                <div class="sidebar">
+                    <p class="page-desc">
+                        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nulla quas ut laboriosam dicta assumenda, totam rerum minus laborum sit consequuntur aspernatur, libero eius perferendis? Vitae corrupti id dolorem corporis nam!
+                    </p>
+                    <div class="keyfigures">
+                        <span class="key-figure statFeedback">
+                            <h5 id="num"></h5>
+                            <h6 id="label"># feedbacks</h6>
+                        </span>
+                        <span class="key-figure statOrg">
+                            <h5 id="num"></h5>
+                            <h6 id="label"># org</h6>
+                        </span>
+                    </div>
+
+                    <h3>Filter</h3>
+
+                    <div class="selections">
+                        <span class="filters dropdownSelect">
+                            <label for="">Emergency</label>
+                            <select name="emergencySelect" id="emergencySelect"></select>
+                        </span>
+                        <span class="filters dropdownSelect">
+                            <label for="">Feedback Type</label>
+                            <select name="feedbackTypeSelect" id="feedbackTypeSelect"></select>
+                        </span>
+
+                        <!-- <span class="filters">
+                            <label for="">Date</label>
+                            <span class="d-flex dropdownDate">
+                                <select class="select" name="dateSelect" id="dateYearSelect" multiple></select>
+                                <select class="select" name="dateSelect" id="dateMonthSelect" multiple></select>
+                            </span>
+                        </span> -->
+
+                        <span class="filters dropdownSelect">
+                            <label for="">Gender</label>
+                            <select name="vulnerableSelect" id="vulnerableSelect"></select>
+                        </span>
+                        <span class="filters dropdownSelect">
+                            <label for="">Age groups</label>
+                            <select name="demographicSelect" id="demographicSelect"></select>
+                        </span>
+                    </div>
+                    <span>
+                        <button type="button" class="btn" id="fResetAll">Reset all filters</button>
+                    </span>
+
+                </div>
+                <!-- sidebar -->
+
+                <div class="panel">
+                    <div class="navbarr">
+                        <ul class="nav nav-tabs submenu">
+                            <li class="nav-item navFeedback">
+                                <a class="nav-link active" href="#" value="home">Overall</a>
+                            </li>
+                            <li class="nav-item navFeedback">
+                                <a class="nav-link " href="#" value="rumours">Rumours</a>
+                            </li>
+                            <li class="nav-item navFeedback">
+                                <a class="nav-link" href="#" value="questions">Questions</a>
+                            </li>
+                            <li class="nav-item navFeedback">
+                                <a class="nav-link " href="#" value="suggestions">Suggestions</a>
+                            </li>
+                            <li class="nav-item navFeedback">
+                                <a class="nav-link " href="#" value="metrics">Metrics</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <!-- Home -->
+                    <div class="navigation" id="home">
+                        <!-- <div class="panel-title">Overall</div> -->
+                        <!-- new template -->
+                        <div class="row charts">
+                            <div class="col-md-6 pieTimeline">
+                                <div class="col-md-12 pieCharts">
+                                    <div class="row">
+                                        <div class="col-md-6 pieChart topic">
+                                            <h5 class="chart-title">Emergency</h5>
+                                            <div id="topicPie"></div>
+                                        </div>
+                                        <div class="col-md-6 pieChart feedbackType">
+                                            <h5 class="chart-title">Type of feedback</h5>
+                                            <div id="feedbackType"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="timeline">
+                                    <h5 class="chart-title">Timeline</h5>
+                                    <div id="timeline"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mapping">
+                                <h5 class="chart-title">Geographic Area (#feedback/area)</h5>
+                                <div id="map"></div>
+                            </div>
+                        </div>
+                        <div class="datatable">
+                            <h5 class="chart-title">Top 5</h5>
+                            <table id="datatable" class="cell-border" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Emergency</th>
+                                        <th>Topic</th>
+                                        <th># Feedback</th>
+                                        <th>Total (%)</th>
+                                        <th>Trends</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Rumours Suggestions Questions tabs -->
+                    <div class="navigation hidden" id="tabsContent">
+                        <div class="panel-title">Rumours & Believes</div>
+                        <div class="tabsDataTable">
+                            <table id="tabsDataTable" class="cell-border" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Emergency</th>
+                                        <th>Code</th>
+                                        <th>Topic</th>
+                                        <th># Feedback</th>
+                                        <th>Total (%)</th>
+                                        <th>Trends</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Metrics -->
+                    <div class="navigation hidden" id="metrics">
+                        <div class="panel-title">Metrics</div>
+                        <div class="metricsCharts">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="col-md-12">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <h5 class="chart-title">Diversity Groups</h5>
+                                                <div id="demographicPie"></div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <h5 class="chart-title">Gender</h5>
+                                                <div id="genderPie"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <h5 class="chart-title">Language</h5>
+                                                <div id="vulnerablesPie"></div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <h5 class="chart-title">Feedback Channels</h5>
+                                                <div id="channelsPie"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <h5 class="chart-title">Geographic Area</h5>
+                                        <div id="metricsMap"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <!-- <h5 class="chart-title">Regions</h5> -->
+                                <table id="metricsTable" class="cell-border" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Location</th>
+                                            <th>Total</th>
+                                            <th>Rumours</th>
+                                            <th>Questions</th>
+                                            <th>Requests</th>
+                                            <th>Others</th>
+                                            <th>Gender</th>
+                                            <th>Vulnerable groups</th>
+                                            <th>total (%)</th>
+                                            <th>Trends</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- panel -->
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="mt-1 pt-1 pb-1 footer">
+        <div class="container">
+            <div class="row">
+                <div class="col copyright">
+                    <p class=""><small class="text-white-50">Comunity Response Hub | Dataviz © 2022. Produced by the Collective Service.</small></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="js/feedback.js"></script>
+</body>
+
+</html>
+
+</html>
+
+</html>

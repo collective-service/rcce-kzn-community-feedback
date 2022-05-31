@@ -1,0 +1,35 @@
+{
+    "Feedback": {
+        "Framework": {
+            "Org": "Source/Organisation CREC",
+            "Emergency": "OPERATION",
+            "Type": "FEEDBACK TYPE",
+            "Types": {
+                "rumours": "Observation_Perception_Or_Belief",
+                "suggestions": "Suggestions_Requests",
+                "questions": "Questions"
+            },
+            "Type_short": "",
+            "Category": "CATEGORY",
+            "Category_short": "",
+            "Code": "CODE",
+            "Topic": "CODE",
+            "Code_short": "",
+            "Gender": "SEX",
+            "Population": "AGE RANGE",
+            "Diversity": "Other DIVERSITY factors",
+            "Language": "LANGUAGE",
+            "Channel": "FEEDBACK CHANNEL",
+            "Date": "DATE",
+            "DateFormat": "YYYY-MM-DD",
+            "Aggregation": "NUMBER OF TIMES",
+            "Adm1": "DISTRICT",
+            "Adm2": "DISTRICT",
+            "MetricsAdminLevel": "MUNICIPALITY"
+        }
+    },
+    "Map": {
+        "Admin2": "ADM3_EN",
+        "Admin2_code": "AdmCode"
+    }
+}
