@@ -391,6 +391,13 @@ h6 {
 .map-tip {
     position: absolute;
 }
+#countries {
+    stroke: #ccc;
+    stroke-width: 0.01;
+  }
+  #countries path {
+    cursor: pointer;
+  }
 
 table.dataTable thead th,
 table.dataTable thead td {

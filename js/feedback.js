@@ -62,7 +62,8 @@ function initViz() {
     generateDateDropdown();
 
     const outbreakColors = ['#F14F43', '#FF707A', '#FF95B0', '#FFBDE3']; //['#D20E1E', '#118DFF', '#12239E'];
-    const typesCols = ['#204669', '#546B89', '#798BA5', '#A6B0C3', '#DBDEE6'];
+    // const typesCols = ['#204669', '#546B89', '#798BA5', '#A6B0C3', '#DBDEE6'];
+    const typesCols = ['#F14F43','#204669', '#546B89', '#798BA5', '#A6B0C3', '#DBDEE6'];
     outbreakPie = generatePieChart('topicPie', getPieChartData('Emergency'), outbreakColors);
     feedbackTypePie = generatePieChart('feedbackType', getPieChartData('Type'), typesCols);
 
@@ -201,7 +202,7 @@ function getPieChartData(colName, dataArg = globalFilteredCFData) {
                 return d[config.Feedback.Framework.Aggregation];
             });
         })
-        .entries(dataArg);
+        .entries(dataArg).sort(sortNestedData);
 
     var colonnes = [];
     data.forEach(element => {
@@ -296,9 +297,9 @@ function generateTimeline(data) {
             },
             columns: data
         },
-        // color: {
-        //     pattern: mainColor
-        // },
+        color: {
+            pattern: ['#204669', '#F14F43']
+        },
         axis: {
             x: {
                 type: 'timeseries',
@@ -428,7 +429,7 @@ function createCodePctChart(id, value, total = totalNumberOfFeedback) {
     ];
 
     if (typeof(value) == typeof([])) {
-        colors = ['#F14F43', '#BB8379', '#727AFD', '#2C4AC4', '#DBECE9'];
+        colors = ['#F14F43', '#BB8379', '#727AFD', '#2C4AC4', '#DBECE9']; 
         var sommeVals = 0;
         data = value;
         for (let index = 0; index < value.length; index++) {
@@ -480,7 +481,17 @@ function createCodePctChart(id, value, total = totalNumberOfFeedback) {
         legend: {
             show: false
         },
-        tooltip: { show: false }
+        tooltip: { 
+            //show: false 
+            grouped:false,
+            format: {
+                title: function (d) { return 'Data'; },
+                value: function (value, ratio, id) {
+                    var val = id === 'total' ? total : value;
+                    return val;
+                }
+            }
+        }
     });
 
     return chart;
@@ -520,6 +531,9 @@ function createSparkLine(id, data) {
             x: 'x',
             columns: data,
             type: 'area'
+        },
+        color: {
+            pattern: ['#204669', '#F14F43']
         },
         axis: {
             x: {
@@ -664,7 +678,7 @@ function createMap(mapID) {
 
 
     //map tooltips
-    const maptip = d3.select('#' + mapID).append('div').attr('class', 'd3-tip map-tip hidden');
+    maptip = d3.select('#' + mapID).append('div').attr('class', 'd3-tip map-tip hidden');
     const g = mapsvg.append("g").attr('id', 'countries')
         .selectAll("path")
         .data(geomData.features)
@@ -678,7 +692,9 @@ function createMap(mapID) {
             // console.log(d);
             var className = (mapadm2Arr.includes(d.properties.ADM3_EN)) ? 'hasFeedback' : 'inactive';
             return className;
-        });
+        })
+        .attr('stroke-width', .2)
+        .attr('stroke', '#fff');
 
     g.filter('.hasFeedback')
         .on("mousemove", function(d) {
@@ -696,11 +712,11 @@ function createMap(mapID) {
 } //createMap
 
 function showMapTooltip(d, maptip, mapsvg) {
-    var mapData = generateDataForMap(globalFilteredCFData);
-    var filtered = mapData.filter(pt => pt.key == d.properties.ADM3_EN);
-    var value = (filtered.length != 0) ? filtered[0].value : 0; // en pourcentage a calculer si tu veux 
+    // var mapData = generateDataForMap(globalFilteredCFData);
+    // var filtered = mapData.filter(pt => pt.key == d.properties.ADM3_EN);
+    // var value = (filtered.length != 0) ? filtered[0].value : 0; // en pourcentage a calculer si tu veux 
     var mouse = d3.mouse(mapsvg.node()).map(function(d) { return parseInt(d); });
-    var text = "Region : " + d.properties.ADM3_EN + "<br> # feedback: " + value;
+    var text = (d.properties.ADM3_EN).toUpperCase() ;//+ "<br> # feedback: " + value;
 
     maptip
         .classed('hidden', false)
@@ -1053,12 +1069,15 @@ let diversityPie,
     channelsPie;
 
 let metricsDataTable;
-
+const diversityCols = ['#F14F43','#204669', '#546B89', '#798BA5', '#A6B0C3', '#DBDEE6','#DBDEE6','#DBDEE6','#DBDEE6','#DBDEE6','#DBDEE6','#DBDEE6','#DBDEE6',,'#DBDEE6','#DBDEE6','#DBDEE6','#DBDEE6'];
+const genderCols = ['#F14F43','#204669', '#546B89'];
+const langCols = ['#F14F43','#204669', '#546B89', '#798BA5'];
+const channelCols = ['#F14F43','#204669', '#546B89', '#798BA5','#A6B0C3', '#DBDEE6','#DBDEE6','#DBDEE6'];
 function generateMetrics() {
-    diversityPie = generatePieChart('demographicPie', getPieChartData('Diversity'));
-    genderPie = generatePieChart('genderPie', getPieChartData('Gender'));
-    langPie = generatePieChart('vulnerablesPie', getPieChartData('Language'), outbreakColors);
-    channelsPie = generatePieChart('channelsPie', getPieChartData('Channel'));
+    diversityPie = generatePieChart('demographicPie', getPieChartData('Diversity'),diversityCols);
+    genderPie = generatePieChart('genderPie', getPieChartData('Gender'), genderCols);
+    langPie = generatePieChart('vulnerablesPie', getPieChartData('Language'), langCols);
+    channelsPie = generatePieChart('channelsPie', getPieChartData('Channel'), channelCols);
 
     generateMetricsDataTable();
 
@@ -1071,7 +1090,7 @@ function generateMetrics() {
 function updateMetricsFromFilter(data = globalFilteredCFData) {
     //pies
     diversityPie.load({
-        columns: getPieChartData('Population'),
+        columns: getPieChartData('Diversity'),
         unload: true
     });
     genderPie.load({
@@ -1079,11 +1098,11 @@ function updateMetricsFromFilter(data = globalFilteredCFData) {
         unload: true
     });
     langPie.load({
-        columns: getPieChartData('Population'),
+        columns: getPieChartData('Language'),
         unload: true
     });
     channelsPie.load({
-        columns: getPieChartData('Emergency'),
+        columns: getPieChartData('Channel'),
         unload: true
     });
     const dt = getMetricsTableData(data);
