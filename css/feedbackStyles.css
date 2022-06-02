@@ -394,10 +394,16 @@ h6 {
 #countries {
     stroke: #ccc;
     stroke-width: 0.01;
-  }
-  #countries path {
+}
+#countries path {
     cursor: pointer;
-  }
+}
+
+.c3-texts .c3-text {
+    font-size: 0.71rem;
+    line-height: 1.1;
+    padding-right: 5px;
+}
 
 table.dataTable thead th,
 table.dataTable thead td {

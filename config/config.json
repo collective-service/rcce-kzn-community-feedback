@@ -25,7 +25,9 @@
             "Aggregation": "NUMBER OF TIMES",
             "Adm1": "DISTRICT",
             "Adm2": "DISTRICT",
-            "MetricsAdminLevel": "MUNICIPALITY"
+            "MetricsAdminLevel": "MUNICIPALITY",
+            "Criticality": "CRITICALITY",
+            "Sensitivity": "SENSITIVITY"
         }
     },
     "Map": {

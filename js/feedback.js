@@ -420,8 +420,9 @@ function getTopNTopics(dataArg) {
     return returnArg;
 }
 
-function createCodePctChart(id, value, total = totalNumberOfFeedback) {
-    var colors = ['#F14F43', '#DBECE9']; //['#D20E1E', '#12239E'];#F3FAFF DBECE9 #D9F3FF
+function createCodePctChart(id, value, colors=['#F14F43', '#DBECE9'], total = totalNumberOfFeedback) {
+    // var colors = ['#F14F43', '#DBECE9']; //['#D20E1E', '#12239E'];#F3FAFF DBECE9 #D9F3FF
+    let labelizeOnlyOne = false;
     var labelArr = ['#feedback', 'total'];
     var data = [
         [labelArr[0], value],
@@ -429,7 +430,9 @@ function createCodePctChart(id, value, total = totalNumberOfFeedback) {
     ];
 
     if (typeof(value) == typeof([])) {
-        colors = ['#F14F43', '#BB8379', '#727AFD', '#2C4AC4', '#DBECE9']; 
+        colors == undefined ? colors = ['#F14F43', '#BB8379', '#727AFD', '#2C4AC4', '#DBECE9'] : null; 
+        labelizeOnlyOne = true;
+        labelArr = [];
         var sommeVals = 0;
         data = value;
         for (let index = 0; index < value.length; index++) {
@@ -456,7 +459,11 @@ function createCodePctChart(id, value, total = totalNumberOfFeedback) {
             labels: {
                 format: function(d, id) {
                     if (id != 'total') {
-                        const pct = d3.format('.0%')(d / total);
+                        let pct;
+                        if(labelizeOnlyOne){
+                            id == labelArr[0] ? pct = d3.format('.0%')(d / total) : pct='0%';
+                        } else pct = d3.format('.0%')(d / total);
+
                         if (pct != '0%') {
                             return pct;
                         }
@@ -619,7 +626,7 @@ function generateDatatable(data) {
 }
 let mapadm2Arr;
 let isMobile = $(window).width() < 767 ? true : false;
-let g, mapsvg, projection, width, height, zoom, path;
+let g, mapsvg, projection, width, height, zoom, path, maptip;
 let currentZoom = 1;
 let mapFillColor = '#ccc', //'#204669',
     mapInactive = '#fff',
@@ -1042,7 +1049,7 @@ function generateTabsDTCodesCharts(data, max) {
     // restons sur les 15 premieres valeurs, qui sont affcichees sur la table
     for (let index = 0; index < data.length; index++) {
         const id = "-" + data[index][0];
-        createCodePctChart(id, data[index][4], max);
+        createCodePctChart(id, data[index][4], undefined, max);
         //spark
         const sparkdata = getSparkChartDataForTabs(data[index][1], data[index][2]);
         // console.log(sparkdata);
@@ -1245,14 +1252,16 @@ function generateMetricsTableCharts(data, dataArg = communityFeedbackData) {
         // Gender chart
         const filter = dataArg.filter((d) => { return d[config.Feedback.Framework.MetricsAdminLevel] == element[1]; });
 
-        const genderdata = getPieChartData("Gender", filter);
+        const sensitivitydata = getPieChartData("Sensitivity", filter);
         const gdid = "-gd-" + data[index][0];
-        createCodePctChart(gdid, genderdata);
+        const sensitivityCols = ['#F14F43','#204669', '#546B89', '#798BA5','#DBECE9'];//DBECE9
+        createCodePctChart(gdid, sensitivitydata, sensitivityCols);
 
         // vulnerable chart
-        const vuldata = getPieChartData("Population", filter);
+        const criticalitydata = getPieChartData("Criticality", filter);
+        const criticalityCols = ['#F14F43','#204669', '#546B89','#DBECE9'];
         const vulid = "-vul-" + data[index][0];
-        createCodePctChart(vulid, vuldata);
+        createCodePctChart(vulid, criticalitydata, criticalityCols);
 
 
         //gauge total
