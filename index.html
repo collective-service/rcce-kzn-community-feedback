@@ -67,8 +67,11 @@
                             </li>
                         </ul>
                     </div> -->
+                    <div class="icon-bar">
+                      <a href="#"><i class="fa fa-envelope"></i></a>
+                    </div>
+                  </nav>
 
-                </nav>
             </div>
         </div>
 
@@ -81,11 +84,7 @@
             <div class="col-md-12 feedback" id="main">
 
                 <div class="sidebar">
-                    <p class="page-desc">
-                        On 11-13 April, severe flooding and landslides caused by heavy rainfall affected southern and south-eastern South Africa, particularly the Provinces of KwaZulu-Natal and Eastern Cape. According to national authorities, 443 people died in KwaZulu-Natal
-                        and over 40,000 are missing. More than 40,000 people have been displaced, while nearly 4,000 houses were destroyed and more than 8,000 others were damaged, mostly across Durban City and its surrounding areas.
-                    </p>
-                    <div class="keyfigures">
+                  <div class="keyfigures">
                         <span class="key-figure statFeedback">
                             <h5 id="num"></h5>
                             <h6 id="label"># feedbacks</h6>
@@ -96,17 +95,27 @@
                         </span>
                     </div>
 
-                    <h3>Filter</h3>
+                  <h4>Situation</h4>
+                  <div class="situation">
+                    <p class="page-desc">
+                        On 11-13 April, severe flooding and landslides caused by heavy rainfall affected southern and south-eastern South Africa, particularly the Provinces of KwaZulu-Natal and Eastern Cape. According to national authorities, 443 people died in KwaZulu-Natal
+                        and over 40,000 are missing. More than 40,000 people have been displaced, while nearly 4,000 houses were destroyed and more than 8,000 others were damaged, mostly across Durban City and its surrounding areas.
+                    </p>
+                    <div class="source">Reliefweb (30 April 2022)</div>
+                  </div>
+
+
+                    <h4>Filter</h4>
 
                     <div class="selections">
-                        <span class="filters dropdownSelect">
-                            <label for="">Emergency</label>
+                      <div class="filters">
+                            <label for="emergencySelect">Emergency</label>
                             <select name="emergencySelect" id="emergencySelect"></select>
-                        </span>
-                        <span class="filters dropdownSelect">
-                            <label for="">Feedback Type</label>
+                      </div>
+                      <div class="filters">
+                            <label for="feedbackTypeSelect">Feedback</label>
                             <select name="feedbackTypeSelect" id="feedbackTypeSelect"></select>
-                        </span>
+                      </div>
 
                         <!-- <span class="filters">
                             <label for="">Date</label>
@@ -115,18 +124,17 @@
                                 <select class="select" name="dateSelect" id="dateMonthSelect" multiple></select>
                             </span>
                         </span> -->
-
-                        <span class="filters dropdownSelect">
-                            <label for="">Gender</label>
+                        <div class="filters">
+                            <label for="vulnerableSelect">Gender</label>
                             <select name="vulnerableSelect" id="vulnerableSelect"></select>
-                        </span>
-                        <span class="filters dropdownSelect">
-                            <label for="">Age groups</label>
+                        </div>
+                        <div class="filters">
+                            <label for="demographicSelect">Age groups</label>
                             <select name="demographicSelect" id="demographicSelect"></select>
-                        </span>
+                        </div>
                     </div>
                     <span>
-                        <button type="button" class="btn" id="fResetAll">Reset all filters</button>
+                        <button type="button" class="btn" id="fResetAll">Reset filters</button>
                     </span>
 
                 </div>
@@ -181,8 +189,8 @@
                             </div>
                         </div>
                         <div class="datatable">
-                            <h5 class="chart-title">Top 5</h5>
-                            <table id="datatable" class="cell-border" style="width:100%">
+                            <h5 class="chart-title">Most Frequent Topics</h5>
+                            <table id="datatable" style="width:100%">
                                 <thead>
                                     <tr>
                                         <th>#</th>
