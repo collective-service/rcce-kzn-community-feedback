@@ -86,10 +86,11 @@ h6 {
 .bg-dark {
   background: #0a3656 !important; }
 
+
 .navbar,
 .navbar-brand img {
-  margin-right: 15px;
-  margin-top: -3px; }
+  margin-right: 10px;
+  margin-top: 0px; }
 
 /* MENU Colors*/
 .navbar-dark .navbar-nav a.nav-link {

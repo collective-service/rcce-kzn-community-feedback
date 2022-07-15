@@ -50,9 +50,10 @@ body {
 }
 
 .navbar {
-    color: #FFF;
+    color: #000;
     width: 100%;
     margin: 0px !important;
+
 }
 
 .navbar,
@@ -62,26 +63,41 @@ body {
     font-family: "Roboto", sans-serif;
 }
 
-.bg-dark {
-    background: #0a3656 !important;
-}
+.navbar-toggler {float: right;}
 
-.navbar,
-.navbar-brand img {
-    margin-right: 15px;
-    margin-top: -3px;
-}
+.ifrc-brand {
+    background: #e6e6e6 !important;
+    border-bottom:1px #C2C4C6 solid;
+  }
+.logo {float: left; margin: 10px; width: 60px; height: 60px; object-fit: cover; object-position: 100% 0;}
+.sitebranding {
+  display: flex;}
+.site-title {font-size: 1.2rem; line-height: 1.5em;font-weight: bold; display:block; margin-right: 10px;}
+.site-subtitle {font-size: 0.83rem; line-height: 1.5em;font-weight: 300; display: block;}
+
+.footer {
+  background: #000 !important;
+  color: white; }
+
+    .footer .links li a:hover {
+      text-decoration: none;
+      color: #4180CB; }
+    .footer .about-company a:hover {
+      color: #4180CB; }
+  .footer .copyright p {
+    border-top: none !important;}
 
 
 /* Icon bar */
 .icon-bar {
-  width: 90px; /* Set a specific width */
+  float: right;
+  text-align: right;
+  width: 150px; /* Set a specific width */
   margin-right: 0 px;
   margin-left: auto;
 }
 
 .icon-bar a {
-  display: block; /* Make the links appear below each other instead of side-by-side */
   text-align: center; /* Center-align text */
   padding: 5px; /* Add some padding */
   transition: all 0.3s ease; /* Add transition for hover effects */
