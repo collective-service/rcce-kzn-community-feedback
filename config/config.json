@@ -9,6 +9,11 @@
                 "suggestions": "Suggestions_Requests",
                 "questions": "Questions"
             },
+            "Types_cleaned": {
+                "rumours": "Observation, Perception, Belief",
+                "suggestions": "Suggestions, Requests",
+                "questions": "Questions"
+            },
             "Type_short": "",
             "Category": "CATEGORY",
             "Category_short": "",
@@ -25,6 +30,7 @@
             "Aggregation": "NUMBER OF TIMES",
             "Adm1": "DISTRICT",
             "Adm2": "DISTRICT",
+            "Adm4": "MUNICIPALITY",
             "MetricsAdminLevel": "MUNICIPALITY",
             "Criticality": "CRITICALITY",
             "Sensitivity": "SENSITIVITY"

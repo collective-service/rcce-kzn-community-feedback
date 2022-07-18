@@ -63,7 +63,7 @@ function initViz() {
 
     const outbreakColors = ['#F14F43', '#FF707A', '#FF95B0', '#FFBDE3']; //['#D20E1E', '#118DFF', '#12239E'];
     // const typesCols = ['#204669', '#546B89', '#798BA5', '#A6B0C3', '#DBDEE6'];
-    const typesCols = ['#F14F43','#204669', '#546B89', '#798BA5', '#A6B0C3', '#DBDEE6'];
+    const typesCols = ['#F14F43', '#204669', '#546B89', '#798BA5', '#A6B0C3', '#DBDEE6'];
     outbreakPie = generatePieChart('topicPie', getPieChartData('Emergency'), outbreakColors);
     feedbackTypePie = generatePieChart('feedbackType', getPieChartData('Type'), typesCols);
 
@@ -112,13 +112,14 @@ function getColumnUniqueValues(col, data = globalFilteredCFData) {
 } //getColumnUniqueValues
 
 function generateDropdowns() {
-    var colsArr = ['Emergency', 'Type', 'Date', 'Gender', 'Population'];
+    var colsArr = ['Emergency', 'Type', 'Date', 'Gender', 'Population', 'Adm4'];
     for (let index = 0; index < colsArr.length; index++) {
         const col = colsArr[index];
         var id = (col == 'Emergency') ? 'emergencySelect' :
             (col == 'Type') ? 'feedbackTypeSelect' :
             (col == 'Gender') ? 'vulnerableSelect' :
-            (col == 'Population') ? 'demographicSelect' : 'dateSelect';
+            (col == 'Population') ? 'demographicSelect' :
+            (col == 'Adm4') ? 'locationSelect' : 'dateSelect';
 
         var options = "";
         var data = getColumnUniqueValues(col);
@@ -243,15 +244,16 @@ function getTimelineData(dataArg = globalFilteredCFData) {
             });
         })
         .entries(dataArg);
-
     var xArr = ['x'],
         bars = ['feedback'],
-        lines = ['FB'],
+        lines = ['cumulative'],
         colonnes = [];
+    var cumul = 0;
     data.forEach(element => {
         xArr.push(element.key);
+        cumul += element.value;
         bars.push(element.value);
-        lines.push(element.value);
+        lines.push(cumul);
     });
     colonnes.push(xArr);
     colonnes.push(bars);
@@ -293,7 +295,7 @@ function generateTimeline(data) {
             // xFormat: '%d/%m/%Y',
             types: {
                 feedback: 'bar',
-                FB: 'area'
+                cumulative: 'area'
             },
             columns: data
         },
@@ -420,7 +422,7 @@ function getTopNTopics(dataArg) {
     return returnArg;
 }
 
-function createCodePctChart(id, value, colors=['#204669', '#DBDEE6'], total = totalNumberOfFeedback) {
+function createCodePctChart(id, value, colors = ['#204669', '#DBDEE6'], total = totalNumberOfFeedback) {
     // var colors = ['#F14F43', '#DBDEE6']; //['#D20E1E', '#12239E'];#F3FAFF DBDEE6 #D9F3FF
     let labelizeOnlyOne = false;
     var labelArr = ['#feedback', 'total'];
@@ -460,8 +462,8 @@ function createCodePctChart(id, value, colors=['#204669', '#DBDEE6'], total = to
                 format: function(d, id) {
                     if (id != 'total') {
                         let pct;
-                        if(labelizeOnlyOne){
-                            id == labelArr[0] ? pct = d3.format('.0%')(d / total) : pct='0%';
+                        if (labelizeOnlyOne) {
+                            id == labelArr[0] ? pct = d3.format('.0%')(d / total) : pct = '0%';
                         } else pct = d3.format('.0%')(d / total);
 
                         if (pct != '0%') {
@@ -490,10 +492,10 @@ function createCodePctChart(id, value, colors=['#204669', '#DBDEE6'], total = to
         },
         tooltip: {
             //show: false
-            grouped:false,
+            grouped: false,
             format: {
-                title: function (d) { return 'Data'; },
-                value: function (value, ratio, id) {
+                title: function(d) { return 'Data'; },
+                value: function(value, ratio, id) {
                     var val = id === 'total' ? total : value;
                     return val;
                 }
@@ -723,7 +725,7 @@ function showMapTooltip(d, maptip, mapsvg) {
     // var filtered = mapData.filter(pt => pt.key == d.properties.ADM3_EN);
     // var value = (filtered.length != 0) ? filtered[0].value : 0; // en pourcentage a calculer si tu veux
     var mouse = d3.mouse(mapsvg.node()).map(function(d) { return parseInt(d); });
-    var text = (d.properties.ADM3_EN).toUpperCase() ;//+ "<br> # feedback: " + value;
+    var text = (d.properties.ADM3_EN).toUpperCase(); //+ "<br> # feedback: " + value;
 
     maptip
         .classed('hidden', false)
@@ -775,6 +777,7 @@ function updateDataSourceFromSelects() {
     var feedbackTypeSelected = $('#feedbackTypeSelect').val();
     var demographicSelected = $('#demographicSelect').val();
     var vulnerableSelected = $('#vulnerableSelect').val();
+    var locationSelected = $('#locationSelect').val();
 
     if (emergencySelected != "all") {
         data = data.filter(function(d) {
@@ -794,6 +797,12 @@ function updateDataSourceFromSelects() {
     if (vulnerableSelected != "all") {
         data = data.filter(function(d) {
             return d[config.Feedback.Framework.Gender] == vulnerableSelected;
+        })
+    }
+
+    if (locationSelected != "all") {
+        data = data.filter(function(d) {
+            return d[config.Feedback.Framework.Adm4] == locationSelected;
         })
     }
     // handle data is void
@@ -868,12 +877,17 @@ $('#demographicSelect').on("change", function() {
     updateVisuals();
 });
 
+$('#locationSelect').on("change", function() {
+    updateVisuals();
+});
+
 //reset
 $('#fResetAll').on("click", function() {
     const nav = $('.submenu li a.nav-link.active').attr('value');
     $('#emergencySelect').val('all');
     $('#vulnerableSelect').val('all');
     $('#demographicSelect').val('all');
+    $('#locationSelect').val('all');
 
     (["home", "metrics"].includes(nav)) ? $('#feedbackTypeSelect').val('all'): null;
 
@@ -925,9 +939,10 @@ $('.navFeedback').on('click', function() {
 
 function updateTabsDataTable(nav) {
     var type = config.Feedback.Framework.Types[nav];
+    const tabTitleType = config.Feedback.Framework.Types_cleaned[nav];
     var filter = globalFilteredCFData.filter((d) => { return d[config.Feedback.Framework.Type] == type; });
 
-    // $('#tabsContent .panel-title').html(type);
+    $('#tabsContent .panel-title').html(tabTitleType);
 
     if (tabsDataTable == undefined) {
         //create the table
@@ -1076,12 +1091,13 @@ let diversityPie,
     channelsPie;
 
 let metricsDataTable;
-const diversityCols = ['#F14F43','#204669', '#546B89', '#798BA5', '#A6B0C3', '#DBDEE6','#DBDEE6','#DBDEE6','#DBDEE6','#DBDEE6','#DBDEE6','#DBDEE6','#DBDEE6',,'#DBDEE6','#DBDEE6','#DBDEE6','#DBDEE6'];
-const genderCols = ['#F14F43','#204669', '#546B89'];
-const langCols = ['#F14F43','#204669', '#546B89', '#798BA5'];
-const channelCols = ['#F14F43','#204669', '#546B89', '#798BA5','#A6B0C3', '#DBDEE6','#DBDEE6','#DBDEE6'];
+const diversityCols = ['#F14F43', '#204669', '#546B89', '#798BA5', '#A6B0C3', '#DBDEE6', '#DBDEE6', '#DBDEE6', '#DBDEE6', '#DBDEE6', '#DBDEE6', '#DBDEE6', '#DBDEE6', , '#DBDEE6', '#DBDEE6', '#DBDEE6', '#DBDEE6'];
+const genderCols = ['#F14F43', '#204669', '#546B89'];
+const langCols = ['#F14F43', '#204669', '#546B89', '#798BA5'];
+const channelCols = ['#F14F43', '#204669', '#546B89', '#798BA5', '#A6B0C3', '#DBDEE6', '#DBDEE6', '#DBDEE6'];
+
 function generateMetrics() {
-    diversityPie = generatePieChart('demographicPie', getPieChartData('Diversity'),diversityCols);
+    diversityPie = generatePieChart('demographicPie', getPieChartData('Diversity'), diversityCols);
     genderPie = generatePieChart('genderPie', getPieChartData('Gender'), genderCols);
     langPie = generatePieChart('vulnerablesPie', getPieChartData('Language'), langCols);
     channelsPie = generatePieChart('channelsPie', getPieChartData('Channel'), channelCols);
@@ -1254,12 +1270,12 @@ function generateMetricsTableCharts(data, dataArg = communityFeedbackData) {
 
         const sensitivitydata = getPieChartData("Sensitivity", filter);
         const gdid = "-gd-" + data[index][0];
-        const sensitivityCols = ['#F14F43','#204669', '#546B89', '#798BA5','#DBDEE6'];//DBDEE6
+        const sensitivityCols = ['#F14F43', '#204669', '#546B89', '#798BA5', '#DBDEE6']; //DBDEE6
         createCodePctChart(gdid, sensitivitydata, sensitivityCols);
 
         // vulnerable chart
         const criticalitydata = getPieChartData("Criticality", filter);
-        const criticalityCols = ['#F14F43','#204669', '#546B89','#DBDEE6'];
+        const criticalityCols = ['#F14F43', '#204669', '#546B89', '#DBDEE6'];
         const vulid = "-vul-" + data[index][0];
         createCodePctChart(vulid, criticalitydata, criticalityCols);
 
