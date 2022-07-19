@@ -390,6 +390,50 @@ function generatePieChart(bind, data, colorRange = typesCols) {
     return chart;
 } //generatePieChart
 
+function createBarChart(bind, data) {
+    var chart = c3.generate({
+        bindto: '#' + bind,
+        size: {
+            height: 200,
+            width: 400
+        },
+        data: {
+            x: 'x',
+            columns: data,
+            type: 'bar'
+        },
+        color: {
+            pattern: [primaryColor]
+        },
+        axis: {
+            rotated: true,
+            x: {
+                type: 'category',
+                tick: {
+                    centered: true,
+                    outer: false,
+                    fit: true,
+                    multiline: false
+                }
+            },
+            y: {
+                show: false,
+                tick: {
+                    centered: true,
+                    outer: false,
+                    fit: true,
+                    count: 5,
+                    format: d3.format('d')
+                }
+            }
+        },
+        legend: {
+            show: false
+        }
+    });
+    return chart;
+} //generateBarChart
+
 function sortNestedData(a, b) {
     if (a.value > b.value) {
         return -1
@@ -785,7 +829,7 @@ function generateMap() {
             var className = (mapadm2Arr.includes(d.properties.ADM1_EN)) ? 'hasFeedback' : 'inactive';
             return className;
         })
-        .attr('stroke-width', .2)
+        .attr('stroke-width', 2)
         .attr('stroke', '#fff')
         .on("mouseenter", function(d) {
 
@@ -797,6 +841,14 @@ function generateMap() {
         .on("mouseout", function(d) {
             maptip.classed('hidden', true);
         });
+
+    g.selectAll(".country-label")
+        .data(geomData.features)
+        .enter().append("text")
+        .attr("class", "country-label")
+        .attr("transform", function(d) { return "translate(" + path.centroid(d) + ")"; })
+        .attr("dy", ".35em")
+        .text(function(d) { return d.properties.ADM1_EN; })
 
     choroplethMap2();
 
@@ -1000,7 +1052,7 @@ function updateVisuals() {
         updateGeoDataTable();
 
         // update map choropleth
-        choroplethMap(mapSVG_1);
+        // choroplethMap(mapSVG_1);
 
     }
     // update others tabs
@@ -1263,10 +1315,10 @@ function getSparkChartDataForTabs(emergency, code, dataArg = globalFilteredCFDat
 } //getSparkChartData
 
 // Metrics
-let diversityPie,
+let diversityPie, diversityBar,
     genderPie,
     langPie,
-    channelsPie;
+    channelsPie, channelsBar;
 
 let metricsDataTable;
 const diversityCols = ['#F14F43', '#204669', '#546B89', '#798BA5', '#A6B0C3', '#DBDEE6', '#DBDEE6', '#DBDEE6', '#DBDEE6', '#DBDEE6', '#DBDEE6', '#DBDEE6', '#DBDEE6', , '#DBDEE6', '#DBDEE6', '#DBDEE6', '#DBDEE6'];
@@ -1275,12 +1327,17 @@ const langCols = ['#F14F43', '#204669', '#546B89', '#798BA5'];
 const channelCols = ['#F14F43', '#204669', '#546B89', '#798BA5', '#A6B0C3', '#DBDEE6', '#DBDEE6', '#DBDEE6'];
 
 function generateMetrics() {
-    diversityPie = generatePieChart('demographicPie', getPieChartData('Diversity'), diversityCols);
+    // const diversityData = getPieChartData('Diversity');
+    // diversityPie = generatePieChart('demographicPie', diversityData, diversityCols);
+    const diversityData = getBarChartData('Diversity');
+    diversityBar = createBarChart('demographicPie', getBarChartData('Diversity'));
     genderPie = generatePieChart('genderPie', getPieChartData('Gender'), genderCols);
     langPie = generatePieChart('vulnerablesPie', getPieChartData('Language'), langCols);
-    channelsPie = generatePieChart('channelsPie', getPieChartData('Channel'), channelCols);
+    channelsBar = createBarChart('channelsPie', getBarChartData('Channel'));
+    // channelsPie = generatePieChart('channelsPie', getPieChartData('Channel'), channelCols);
 
     generateMetricsDataTable();
+
 
     //Map
     // mapSVG_2 = createMap('metricsMap');
@@ -1290,8 +1347,8 @@ function generateMetrics() {
 
 function updateMetricsFromFilter(data = globalFilteredCFData) {
     //pies
-    diversityPie.load({
-        columns: getPieChartData('Diversity'),
+    diversityBar.load({
+        columns: getBarChartData('Diversity'),
         unload: true
     });
     genderPie.load({
@@ -1302,8 +1359,8 @@ function updateMetricsFromFilter(data = globalFilteredCFData) {
         columns: getPieChartData('Language'),
         unload: true
     });
-    channelsPie.load({
-        columns: getPieChartData('Channel'),
+    channelsBar.load({
+        columns: getBarChartData('Channel'),
         unload: true
     });
     const dt = getMetricsTableData(data);
@@ -1312,7 +1369,7 @@ function updateMetricsFromFilter(data = globalFilteredCFData) {
 
     generateMetricsTableCharts(dt);
 
-    choroplethMap(mapSVG_2);
+    // choroplethMap(mapSVG_2);
 
 } //updateTabsDataTableFromFilter
 function generateMetricsDataTable(dataArg = communityFeedbackData) {
