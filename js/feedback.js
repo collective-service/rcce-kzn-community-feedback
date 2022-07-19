@@ -1,4 +1,4 @@
-let geodataUrl = 'data/kzn.json';
+let geodataUrl = 'data/adm1.json';
 let dataURL = 'data/data.csv'; //drc_all_cf_data.csv
 let configFile = 'config/config.json';
 
@@ -14,7 +14,7 @@ $(document).ready(function() {
             d3.json(configFile),
             d3.csv(dataURL),
         ]).then(function(data) {
-            geomData = topojson.feature(data[0], data[0].objects.kzn_eth_adm3);
+            geomData = topojson.feature(data[0], data[0].objects.southafrica); //kzn_eth_adm3
             config = data[1];
             communityFeedbackData = data[2];
             // console.log(communityFeedbackData)
@@ -81,7 +81,8 @@ function initViz() {
 
     //map
     // initiateMap();
-    generateOverviewMap();
+    // generateOverviewMap();
+    generateMap();
 
     //
     // generateTabsDataTable();
@@ -735,6 +736,73 @@ function generateOverviewMap() {
 
 }
 
+function generateMap() {
+    mapadm2Arr = getColumnUniqueValues("Adm1");
+    width = (isMobile) ? 400 : 610;
+    height = 400;
+    var mapScale = (isMobile) ? width * 3.7 * 2 : width * 2.5
+    var mapCenter = [20.6, -30.01]; //[28, -20.1]; //(isMobile) ? [12, 12] : [28, -20.1]; // deplace la carte vertical, horizontal
+
+    projection = d3.geoMercator()
+        .center(mapCenter) //mapCenter
+        .scale(mapScale) //1500
+        .translate([width / 2.9, height / 1.6]); //[width / 2.9, height / 1.6]
+
+    path = d3.geoPath().projection(projection);
+
+    zoom = d3.zoom()
+        .scaleExtent([1, 8])
+        .on("zoom", zoomed);
+
+
+    mapsvg = d3.select('#map').append("svg")
+        .attr("width", width)
+        .attr("height", height);
+    // .call(zoom)
+    // .on("wheel.zoom", null)
+    // .on("dblclick.zoom", null);
+
+    mapsvg.append("rect")
+        .attr("width", "100%")
+        .attr("height", "100%")
+        .attr("fill", "#fff");
+
+
+    //map tooltips
+    maptip = d3.select('#map').append('div').attr('class', 'd3-tip map-tip hidden');
+    g = mapsvg.append("g");
+    g.attr('id', 'countries')
+        .selectAll("path")
+        .data(geomData.features)
+        .enter()
+        .append("path")
+        .attr('d', path)
+        .attr('id', function(d) {
+            return d.properties.ADM1_EN;
+        })
+        .attr('class', function(d) {
+            // console.log(d);
+            var className = (mapadm2Arr.includes(d.properties.ADM1_EN)) ? 'hasFeedback' : 'inactive';
+            return className;
+        })
+        .attr('stroke-width', .2)
+        .attr('stroke', '#fff')
+        .on("mouseenter", function(d) {
+
+            if (d3.select(this).classed("inactive")) {
+                return;
+            }
+            showMapTooltip(d, maptip);
+        })
+        .on("mouseout", function(d) {
+            maptip.classed('hidden', true);
+        });
+
+    choroplethMap2();
+
+
+} //generateMap
+
 function createMap(mapID) {
     var mapsvg;
     mapadm2Arr = getColumnUniqueValues("Adm2");
@@ -802,12 +870,12 @@ function createMap(mapID) {
     return mapsvg;
 } //createMap
 
-function showMapTooltip(d, maptip, mapsvg) {
+function showMapTooltip(d, maptip) {
     // var mapData = generateDataForMap(globalFilteredCFData);
     // var filtered = mapData.filter(pt => pt.key == d.properties.ADM3_EN);
     // var value = (filtered.length != 0) ? filtered[0].value : 0; // en pourcentage a calculer si tu veux
     var mouse = d3.mouse(mapsvg.node()).map(function(d) { return parseInt(d); });
-    var text = (d.properties.ADM3_EN).toUpperCase(); //+ "<br> # feedback: " + value;
+    var text = (d.properties.ADM1_EN).toUpperCase(); //+ "<br> # feedback: " + value;
 
     maptip
         .classed('hidden', false)
@@ -827,7 +895,20 @@ function zoomed() {
     }
 }
 
-function choroplethMap(mapsvg, CFdata = globalFilteredCFData) {
+function choroplethMap2(CFdata = globalFilteredCFData) {
+    var mapData = generateDataForMap(CFdata);
+    var max = mapData[0].value;
+    mapsvg.selectAll('path').each(function(element, index) {
+        d3.select(this).transition().duration(500).attr('fill', function(d) {
+            var filtered = mapData.filter(pt => pt.key == d.properties.ADM1_EN);
+            var num = (filtered.length != 0) ? filtered[0].value : null;
+            var clr = (num == null) ? '#F2F2EF' : mapScale(Math.round((num * 100) / max)); //F2F2EF
+            return clr;
+        });
+    });
+}
+
+function choroplethMap(mapsvg = mapsvg, CFdata = globalFilteredCFData) {
     var mapData = generateDataForMap(CFdata);
     var max = mapData[0].value;
     mapsvg.selectAll('path').each(function(element, index) {
@@ -842,7 +923,7 @@ function choroplethMap(mapsvg, CFdata = globalFilteredCFData) {
 
 function generateDataForMap(CFdata = globalFilteredCFData) {
     var data = d3.nest()
-        .key(function(d) { return d[config.Map.Admin2]; })
+        .key(function(d) { return d[config.Map.Admin1]; })
         .rollup(function(v) {
             return d3.sum(v, function(d) {
                 return d[config.Feedback.Framework.Aggregation];
@@ -1202,8 +1283,8 @@ function generateMetrics() {
     generateMetricsDataTable();
 
     //Map
-    mapSVG_2 = createMap('metricsMap');
-    choroplethMap(mapSVG_2);
+    // mapSVG_2 = createMap('metricsMap');
+    // choroplethMap(mapSVG_2);
 
 } //generateMetrics
 

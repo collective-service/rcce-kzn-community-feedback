@@ -471,6 +471,10 @@ h6 {
     position: absolute;
 }
 
+.hidden {
+    display: none;
+}
+
 .mapping {
     height: 450px;
     overflow-y: scroll;
