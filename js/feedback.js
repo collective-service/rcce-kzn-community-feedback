@@ -684,6 +684,7 @@ function generateDatatable(data) {
                 "targets": "_all"
             },
         ],
+        "autoWidth": false,
         "bLengthChange": false,
         "order": false,
         "dom": "Blrt"
@@ -1138,6 +1139,11 @@ $('.navFeedback').on('click', function() {
         // disable feedback type filter
         d3.select('#feedbackTypeSelect').attr('disabled', true);
 
+        // reset switch show feedback ?
+        d3.select("#rumorSwitch").property("checked", false);
+        d3.select('.tabsDataTable').classed('hidden', false);
+        d3.select('#tabTableSwitch').classed('hidden', true);
+
     } else if (nav == 'metrics') {
         $('#feedbackTypeSelect').val('all');
         updateDataSourceFromSelects();
@@ -1163,7 +1169,17 @@ $('#geoSwitch2Tab').on('change', function() {
     }
     d3.select('#map').classed('hidden', false);
     d3.select('#tableSwith').classed('hidden', true);
-})
+});
+
+$('#rumorSwitch').on('change', function() {
+    if (d3.select("#rumorSwitch").property("checked")) {
+        d3.select('.tabsDataTable').classed('hidden', true);
+        d3.select('#tabTableSwitch').classed('hidden', false);
+        return;
+    }
+    d3.select('.tabsDataTable').classed('hidden', false);
+    d3.select('#tabTableSwitch').classed('hidden', true);
+});
 
 // others tabs
 
@@ -1180,20 +1196,81 @@ function updateTabsDataTable(nav) {
     } else {
         updateTabsDataTableFromFilter(filter);
     }
+    // generate switch datatable
+    generateTabsSwitchDatatable();
 
 } //updateTabsDataTable
 
 function updateTabsDataTableFromFilter(data = globalFilteredCFData) {
-    var dt = getTabsDataTableData(data);
-    var max = d3.sum(data, (d) => { return d[config.Feedback.Framework.Aggregation]; });
+    const dt = getTabsDataTableData(data);
+    const dataSwithTable = getTabsDataTableSwitchData();
+    const max = d3.sum(data, (d) => { return d[config.Feedback.Framework.Aggregation]; });
+
     $('#tabsDataTable').dataTable().fnClearTable();
     $('#tabsDataTable').dataTable().fnAddData(dt);
+
+    $('#tabsDataTableSwitch').dataTable().fnClearTable();
+    $('#tabsDataTableSwitch').dataTable().fnAddData(dataSwithTable);
 
     generateTabsDTCodesCharts(dt, max);
 
 } //updateTabsDataTableFromFilter
 
 let tabsDataTable;
+let tabsDataTableSwitch;
+
+function getTabsDataTableSwitchData(data = globalFilteredCFData) {
+    var dt = [];
+    for (let index = 0; index < data.length; index++) {
+        dt.push([
+            index + 1,
+            data[index][config.Feedback.Framework.Emergency],
+            data[index][config.Feedback.Framework.Date],
+            data[index][config.Feedback.Framework.Feedback_comment],
+            data[index][config.Feedback.Framework.Aggregation],
+            data[index][config.Feedback.Framework.Adm2],
+            data[index][config.Feedback.Framework.Adm5]
+        ])
+    }
+    return dt;
+} //getTabsDataTableSwitchData
+
+function generateTabsSwitchDatatable() {
+    const data = getTabsDataTableSwitchData();
+
+    if (tabsDataTableSwitch != undefined) {
+        $('#tabsDataTableSwitch').dataTable().fnClearTable();
+        $('#tabsDataTableSwitch').dataTable().fnAddData(data);
+        return;
+    }
+
+    tabsDataTableSwitch = $('#tabsDataTableSwitch').removeAttr('width').DataTable({
+        data: data,
+        "columns": [
+            { "width": "1%", targets: 1 },
+            { "width": "2%", targets: 2 },
+            { "width": "2%", targets: 3 },
+            { "width": "40%", targets: 4 },
+            { "width": "1%", targets: 5 },
+            { "width": "2%", targets: 6 },
+            { "width": "5%", targets: 7 }
+        ],
+        "columnDefs": [{
+            "defaultContent": "-",
+            "targets": "_all"
+        }],
+        "autoWidth": false,
+        "bLengthChange": false,
+        // "paging": false,
+        // "scrollY": 600,
+        "pageLength": 15,
+        // "bLengthChange": false,
+        // "pagingType": "simple_numbers",
+        "order": false,
+        "dom": "Blrtp"
+    });
+
+} //generateTabsSwitchDatatable
 
 function generateTabsDataTable(dataArg = globalFilteredCFData) {
     var dtData = getTabsDataTableData(dataArg);
@@ -1204,9 +1281,9 @@ function generateTabsDataTable(dataArg = globalFilteredCFData) {
             { "width": "1%" },
             { "width": "10%" },
             { "width": "10%" },
-            { "width": "5%" },
-            { "width": "8%" },
-            { "width": "8%" }
+            { "width": "1%" },
+            { "width": "10%" },
+            { "width": "10%" }
         ],
         "columnDefs": [{
                 "className": "percentage",
@@ -1221,6 +1298,7 @@ function generateTabsDataTable(dataArg = globalFilteredCFData) {
                 "targets": "_all"
             },
         ],
+        "autoWidth": false,
         "bLengthChange": false,
         // "paging": false,
         // "scrollY": 600,
@@ -1274,7 +1352,7 @@ function getFormattedTabsTableData(dataArg) {
     });
     data = data.sort(sortNestedData);
     return data;
-}
+} //getFormattedTabsTableData
 
 function generateTabsDTCodesCharts(data, max) {
     //gauge charts
@@ -1379,18 +1457,18 @@ function generateMetricsDataTable(dataArg = communityFeedbackData) {
         "columns": [
             //
             { "width": "1%" },
-            { "width": "3%" },
+            { "width": "2%" },
 
-            { "width": "3%" },
-            { "width": "3%" },
-            { "width": "3%" },
-            { "width": "3%" },
-            { "width": "3%" },
+            { "width": "2%" },
+            { "width": "2%" },
+            { "width": "2%" },
+            { "width": "2%" },
+            { "width": "2%" },
 
-            { "width": "5%" },
-            { "width": "5%" },
-            { "width": "9%" },
-            { "width": "9%" }
+            { "width": "10%" },
+            { "width": "10%" },
+            { "width": "3%" },
+            { "width": "3%" }
         ],
         "columnDefs": [
             //
@@ -1415,6 +1493,7 @@ function generateMetricsDataTable(dataArg = communityFeedbackData) {
                 "targets": "_all"
             },
         ],
+        "autoWidth": false,
         "bLengthChange": false,
         "order": false,
         "dom": "Blrt"

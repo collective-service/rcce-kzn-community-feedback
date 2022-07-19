@@ -3,6 +3,7 @@
         "Framework": {
             "Org": "Source/Organisation CREC",
             "Emergency": "OPERATION",
+            "Feedback_comment": "FEEDBACK COMMENT",
             "Type": "FEEDBACK TYPE",
             "Types": {
                 "rumours": "Observation_Perception_Or_Belief",
@@ -31,6 +32,7 @@
             "Adm1": "PROVINCE",
             "Adm2": "DISTRICT",
             "Adm4": "MUNICIPALITY",
+            "Adm5": "TOWN",
             "MetricsAdminLevel": "MUNICIPALITY",
             "Criticality": "CRITICALITY",
             "Sensitivity": "SENSITIVITY"

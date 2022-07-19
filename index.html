@@ -236,7 +236,14 @@
 
                     <!-- Rumours Suggestions Questions tabs -->
                     <div class="navigation hidden" id="tabsContent">
-                        <div class="panel-title">Rumours & Believes</div>
+                        <div class="head">
+                            <div class="panel-title">Rumours & Believes</div>
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" class="custom-control-input" id="rumorSwitch">
+                                <label class="custom-control-label" for="rumorSwitch">Show feedbacks</label>
+                            </div>
+                        </div>
+
                         <div class="tabsDataTable">
                             <table id="tabsDataTable" class="cell-border" style="width:100%">
                                 <thead>
@@ -248,6 +255,21 @@
                                         <th># Feedback</th>
                                         <th>Total (%)</th>
                                         <th>Trends</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                        <div class="hidden" id="tabTableSwitch">
+                            <table id="tabsDataTableSwitch" class="cell-border" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Emergency</th>
+                                        <th>Date</th>
+                                        <th>Feedback</th>
+                                        <th># of times heard</th>
+                                        <th>District</th>
+                                        <th>Town</th>
                                     </tr>
                                 </thead>
                             </table>
