@@ -28,7 +28,7 @@
             "Date": "DATE",
             "DateFormat": "YYYY-MM-DD",
             "Aggregation": "NUMBER OF TIMES",
-            "Adm1": "DISTRICT",
+            "Adm1": "PROVINCE",
             "Adm2": "DISTRICT",
             "Adm4": "MUNICIPALITY",
             "MetricsAdminLevel": "MUNICIPALITY",
@@ -37,6 +37,7 @@
         }
     },
     "Map": {
+        "Admin1": "PROVINCE",
         "Admin2": "ADM3_EN",
         "Admin2_code": "AdmCode"
     }

@@ -101,8 +101,7 @@
                         <p class="page-desc">
                             On 11-13 April, severe flooding and landslides caused by heavy rainfall affected southern and south-eastern South Africa, particularly the Provinces of KwaZulu-Natal and Eastern Cape. According to national authorities, 443 people died in KwaZulu-Natal
                             and over 40,000 are missing. More than 40,000 people have been displaced, while nearly 4,000 houses were destroyed and more than 8,000 others were damaged, mostly across Durban City and its surrounding areas. -
-                            <span
-                                class="source">Reliefweb (30 April 2022)</span>
+                            <span class="source">Reliefweb (30 April 2022)</span>
                         </p>
 
                         <div class="selections">
@@ -195,8 +194,27 @@
                                 </div>
                             </div>
                             <div class="col-md-6 mapping">
-                                <h5 class="chart-title">Geographic Area (#feedback/area)</h5>
+                                <div class="head">
+                                    <h5 class="chart-title">Geographic Area (#feedback/area)</h5>
+                                    <div class="custom-control custom-switch">
+                                        <input type="checkbox" class="custom-control-input" id="geoSwitch2Tab">
+                                        <label class="custom-control-label" for="geoSwitch2Tab">Table format</label>
+                                    </div>
+                                </div>
+
                                 <div id="map"></div>
+                                <div id="tableSwith" class="hidden">
+                                    <table id="datatableSwitch" style="width:100%">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Location</th>
+                                                <th># Feedback</th>
+                                                <th>Total (%)</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                         <div class="datatable">

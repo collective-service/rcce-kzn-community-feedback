@@ -55,6 +55,8 @@ let timeLineChart;
 let overviewTable;
 const topNValues = 5;
 
+let geoDataTable;
+
 function initViz() {
 
     generateKeyFigures();
@@ -70,6 +72,10 @@ function initViz() {
     //timeline
     var tlData = getTimelineData();
     timeLineChart = generateTimeline(tlData);
+
+    // geoTable 
+    generateGeoTable()
+
     //table
     generateDatatable();
 
@@ -529,6 +535,21 @@ function generateCodesCharts(data) {
     }
 }
 
+function generateCodesCharts4GeoTable(data) {
+    //gauge charts
+    d3.select('#datatableSwitch')
+        .selectAll('.percentage-geo')
+        .attr('id', (d, i) => {
+            return "percentage-geo" + i;
+        });
+
+    for (let index = 0; index < data.length; index++) {
+        const val = index + 1;
+        const id = "-geo" + val;
+        createCodePctChart(id, data[index][2]);
+    }
+} //generateCodesCharts4GeoTable
+
 function createSparkLine(id, data) {
     var chart = c3.generate({
         bindto: '#spark' + id,
@@ -626,6 +647,67 @@ function generateDatatable(data) {
     //generateCodesCharts
     generateCodesCharts(dtData);
 }
+
+function updateGeoDataTable(data = globalFilteredCFData) {
+    var dt = getGeoTableData(data);
+    $('#datatableSwitch').dataTable().fnClearTable();
+    $('#datatableSwitch').dataTable().fnAddData(dt);
+
+    generateCodesCharts4GeoTable(dt);
+
+} //updateGeoDataTable
+
+function getGeoTableData(dataArg = globalFilteredCFData) {
+    var regData = d3.nest()
+        .key((d) => { return d[config.Feedback.Framework.MetricsAdminLevel]; })
+        .rollup((v) => {
+            return d3.sum(v, function(d) {
+                return d[config.Feedback.Framework.Aggregation];
+            });
+        })
+        .entries(dataArg).sort(sortNestedData);
+
+    var dt = [];
+    for (let index = 0; index < regData.length; index++) {
+        dt.push([
+            index + 1,
+            regData[index].key,
+            regData[index].value
+        ])
+    }
+    return dt;
+} //getGeoTableData
+
+function generateGeoTable() {
+    const data = getGeoTableData();
+    geoDataTable = $('#datatableSwitch').DataTable({
+        data: data,
+        "columns": [
+            //
+            { "width": "1%" },
+            { "width": "5%" },
+            { "width": "5%" },
+            { "width": "15%" },
+        ],
+        "columnDefs": [{
+                "className": "percentage-geo",
+                "targets": [3]
+            },
+
+            {
+                "defaultContent": "-",
+                "targets": "_all"
+            }
+        ],
+        "bLengthChange": false,
+        "order": false,
+        "pageLength": 20,
+        "dom": "Blrt"
+    });
+    generateCodesCharts4GeoTable(data);
+
+} //generateGeoTable
+
 let mapadm2Arr;
 let isMobile = $(window).width() < 767 ? true : false;
 let g, mapsvg, projection, width, height, zoom, path, maptip;
@@ -834,6 +916,7 @@ function updateVisuals() {
 
         //update datatable
         updateDataTable();
+        updateGeoDataTable();
 
         // update map choropleth
         choroplethMap(mapSVG_1);
@@ -891,6 +974,10 @@ $('#fResetAll').on("click", function() {
 
     (["home", "metrics"].includes(nav)) ? $('#feedbackTypeSelect').val('all'): null;
 
+    // d3.select("#geoSwitch2Tab").property("checked", false);
+    // d3.select('#map').classed('hidden', false);
+    // d3.select('#tableSwith').classed('hidden', true);
+
     // reset dates !
 
     updateVisuals();
@@ -934,6 +1021,16 @@ $('.navFeedback').on('click', function() {
     $('a', this).addClass('active');
 
 });
+
+$('#geoSwitch2Tab').on('change', function() {
+    if (d3.select("#geoSwitch2Tab").property("checked")) {
+        d3.select('#map').classed('hidden', true);
+        d3.select('#tableSwith').classed('hidden', false);
+        return;
+    }
+    d3.select('#map').classed('hidden', false);
+    d3.select('#tableSwith').classed('hidden', true);
+})
 
 // others tabs
 
