@@ -49,7 +49,7 @@ let primaryColor = '#204669',
     secondaryColor = '#A6B0C3',
     tertiaryColor = '#DBDEE6';
 
-let outbreakPie, feedbackTypePie;
+let outbreakPie, feedbackTypePie, donut;
 let timeLineChart;
 
 let overviewTable;
@@ -66,8 +66,12 @@ function initViz() {
     const outbreakColors = ['#F14F43', '#FF707A', '#FF95B0', '#FFBDE3']; //['#D20E1E', '#118DFF', '#12239E'];
     // const typesCols = ['#204669', '#546B89', '#798BA5', '#A6B0C3', '#DBDEE6'];
     const typesCols = ['#F14F43', '#204669', '#546B89', '#798BA5', '#A6B0C3', '#DBDEE6'];
-    outbreakPie = generatePieChart('topicPie', getPieChartData('Emergency'), outbreakColors);
-    feedbackTypePie = generatePieChart('feedbackType', getPieChartData('Type'), typesCols);
+    // outbreakPie = generatePieChart('topicPie', getPieChartData('Emergency'), outbreakColors);
+    // feedbackTypePie = generatePieChart('feedbackType', getPieChartData('Type'), typesCols);
+    outbreakPie = generateDonutChart('topicPie', getPieChartData('Emergency'), outbreakColors);
+    feedbackTypePie = generateDonutChart('feedbackType', getPieChartData('Type'), typesCols);
+
+    createKeyFigInDonuts();
 
     //timeline
     var tlData = getTimelineData();
@@ -86,6 +90,10 @@ function initViz() {
 
     //
     // generateTabsDataTable();
+
+    // donuts
+    const donutData = getPieChartData('Gender')
+    donut = generateDonutChart("donut", donutData);
 }
 //remove empty values of an array object
 function trimArray(arr) {
@@ -389,6 +397,100 @@ function generatePieChart(bind, data, colorRange = typesCols) {
     $('#' + bind).data('c3-chart', chart);
     return chart;
 } //generatePieChart
+
+let donutHeight = 180,
+    donutWidht = 250;
+
+function generateDonutChart(bind, data, colorRange = typesCols) {
+    var chart = c3.generate({
+        bindto: '#' + bind,
+        size: {
+            height: donutHeight,
+            width: donutWidht
+        },
+        data: {
+            columns: data,
+            type: 'donut'
+        },
+        color: {
+            pattern: colorRange
+        },
+        legend: {
+            show: false
+        },
+        donut: {
+            label: {
+                // threshold: 0.1
+                format: function(value, ratio, id) {
+                    return d3.format('.0%')(ratio);
+                }
+            },
+            width: 35
+        },
+        tooltip: {
+            format: {
+                // title: function(d) { return 'Data ' + d; },
+                value: function(value, ratio) {
+                    return d3.format('.0%')(ratio);
+                }
+            }
+        }
+    });
+    $('#' + bind).data('c3-chart', chart);
+
+    return chart;
+} //generateDonutChart
+
+function createKeyFigInDonuts() {
+    const bindArr = ["topicPie", "feedbackType"];
+
+    var numFeedback = d3.sum(globalFilteredCFData, (d) => { return d[config.Feedback.Framework.Aggregation]; }),
+        numOrgs = getColumnUniqueValues("Org").length + 1;
+    let donutDataArr = [],
+        gID = "";
+    bindArr.forEach(bind => {
+        if (bind == "topicPie") {
+            donutDataArr = [numFeedback, "#feedback"];
+            gID = "totalFb";
+        } else {
+            donutDataArr = [numOrgs, "#orgs"];
+            gID = "totalOrgs";
+        }
+
+        const svg = d3.select('#' + bind + ' svg');
+        svg.select("#" + gID).remove();
+
+        let g = svg.append("g").attr("id", gID);
+        g.selectAll("text")
+            .data(donutDataArr).enter()
+            .append("text")
+            .attr("x", donutWidht / 2)
+            .attr("y", function(d, i) {
+                var pos = donutHeight / 2;
+                if (i != 0) {
+                    pos += 14;
+                }
+                return pos;
+            })
+            .text(function(d) { return d; })
+            .attr("fill", function(d, i) {
+                if (i == 0) return "#204669";
+            })
+            .attr("font-size", function(d, i) {
+                if (i == 0) return "25";
+                return "14";
+            })
+            .attr("font-weight", function(d, i) {
+                if (i == 0) return "bold";
+            })
+            .attr("text-anchor", "middle");
+    });
+
+
+
+    donutDataArr = [numFeedback, "#feedback"];
+
+}
 
 function createBarChart(bind, data) {
     var chart = c3.generate({
@@ -1037,6 +1139,7 @@ function updateVisuals() {
             columns: getPieChartData('Emergency'),
             unload: true
         });
+
         feedbackTypePie.load({
             columns: getPieChartData('Type'),
             unload: true
@@ -1052,9 +1155,6 @@ function updateVisuals() {
         updateDataTable();
         updateGeoDataTable();
 
-        // update map choropleth
-        // choroplethMap(mapSVG_1);
-
     }
     // update others tabs
 
@@ -1063,6 +1163,7 @@ function updateVisuals() {
         $('#feedbackTypeSelect').val(type);
 
         // get new data
+
         updateDataSourceFromSelects();
 
         updateTabsDataTableFromFilter();
@@ -1076,6 +1177,7 @@ function updateVisuals() {
     }
 
     // generateKeyFigures();
+    createKeyFigInDonuts();
 }
 
 $('#emergencySelect').on("change", function() {
@@ -1123,8 +1225,14 @@ $('.navFeedback').on('click', function() {
     $('.navigation').addClass('hidden');
 
     d3.select('#feedbackTypeSelect').property('disabled', false);
+
+    d3.select('.timeline').classed('hidden', false);
+    d3.select('.mapping').classed('hidden', false);
+    d3.select("#invariantSection").classed("hidden", false);
+
     $('#feedbackTypeSelect').val('all');
     updateDataSourceFromSelects();
+    createKeyFigInDonuts();
     //Add active class to the clicked item
     var nav = $('a', this).attr('value');
 
@@ -1135,6 +1243,9 @@ $('.navFeedback').on('click', function() {
 
         //filter tabs datatable
         updateTabsDataTable(nav);
+
+        createKeyFigInDonuts();
+
         nav = "tabsContent";
         // disable feedback type filter
         d3.select('#feedbackTypeSelect').attr('disabled', true);
@@ -1144,6 +1255,9 @@ $('.navFeedback').on('click', function() {
         d3.select('.tabsDataTable').classed('hidden', false);
         d3.select('#tabTableSwitch').classed('hidden', true);
 
+        d3.select('.timeline').classed('hidden', true);
+        d3.select('.mapping').classed('hidden', true);
+
     } else if (nav == 'metrics') {
         $('#feedbackTypeSelect').val('all');
         updateDataSourceFromSelects();
@@ -1151,7 +1265,8 @@ $('.navFeedback').on('click', function() {
         if (metricsDataTable == undefined) {
             generateMetrics();
         }
-
+        // hide maps and timeline
+        d3.select("#invariantSection").classed("hidden", true);
     }
 
     generateKeyFigures();

@@ -42,37 +42,11 @@
                         <div class="site-subtitle">The South African Red Cross Society</div>
                     </div>
 
-                    <!-- <div class="collapse navbar-collapse" id="navigationPages">
-                        <ul class="navbar-nav ml-md-auto">
-                            <li class="nav-item navSite">
-                                <a class="nav-link " href="index.html" value="landing">Home</a>
-                            </li>
-                            <li class="nav-item navSite">
-                                <a class="nav-link context" href="situation.html" value="context">Situation</a>
-                            </li>
-                            <li class="nav-item navSite">
-                                <a class="nav-link coordination" href="coordination.html" value="behaviors">Coordination</a>
-                            </li>
-                            <li class="nav-item navSite">
-                                <a class="nav-link activities" href="activities.html" value="activities">Activities</a>
-                            </li>
-                            <li class="nav-item navSite">
-                                <a class="nav-link behaviors" href="behaviors.html" value="behaviors">Behaviors</a>
-                            </li>
-                            <li class="nav-item navSite">
-                                <a class="nav-link feedback" href="feedback.html">Feedbacks</a>
-                            </li>
-                            <li class="nav-item navSite">
-                                <a class="nav-link reports" href="reports.html" value="reports">Reports</a>
-                            </li>
-                        </ul>
-                    </div> -->
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigationPages">
           					<span class="navbar-toggler-icon"></span>
-          					</button>
+          			</button>
 
                 </nav>
-
             </div>
         </div>
 
@@ -85,7 +59,7 @@
             <div class="col-md-12 feedback" id="main">
 
                 <div class="sidebar">
-                    <div class="keyfigures">
+                    <!-- <div class="keyfigures">
                         <span class="key-figure statFeedback">
                             <h5 id="num"></h5>
                             <h6 id="label"># feedbacks</h6>
@@ -94,7 +68,7 @@
                             <h5 id="num"></h5>
                             <h6 id="label"># org</h6>
                         </span>
-                    </div>
+                    </div> -->
 
                     <div class="situation">
                         <h4>Latest Emergency</h4>
@@ -170,11 +144,55 @@
                             </li>
                         </ul>
                     </div>
+                    <!-- section commune -->
+                    <div class="row" id="invariantSection">
+                        <div class="col-md-6 pieTimeline">
+                            <div class="col-md-12 pieCharts">
+                                <div class="row">
+                                    <div class="col-md-6 pieChart topic">
+                                        <h5 class="chart-title">Emergency</h5>
+                                        <div id="topicPie"></div>
+                                    </div>
+                                    <div class="col-md-6 pieChart feedbackType">
+                                        <h5 class="chart-title">Type of feedback</h5>
+                                        <div id="feedbackType"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="timeline">
+                                <h5 class="chart-title">Timeline</h5>
+                                <div id="timeline"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mapping">
+                            <div class="head">
+                                <h5 class="chart-title">Geographic Area (#feedback/area)</h5>
+                                <div class="custom-control custom-switch">
+                                    <input type="checkbox" class="custom-control-input" id="geoSwitch2Tab">
+                                    <label class="custom-control-label" for="geoSwitch2Tab">Table format</label>
+                                </div>
+                            </div>
+
+                            <div id="map"></div>
+                            <div id="tableSwith" class="hidden">
+                                <table id="datatableSwitch" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Location</th>
+                                            <th># Feedback</th>
+                                            <th>Total (%)</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                     <!-- Home -->
                     <div class="navigation" id="home">
                         <!-- <div class="panel-title">Overall</div> -->
                         <!-- new template -->
-                        <div class="row charts">
+                        <!-- <div class="row charts">
                             <div class="col-md-6 pieTimeline">
                                 <div class="col-md-12 pieCharts">
                                     <div class="row">
@@ -216,7 +234,7 @@
                                     </table>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
                         <div class="datatable">
                             <h5 class="chart-title">Most Frequent Topics</h5>
                             <table id="datatable" style="width:100%">
@@ -243,7 +261,6 @@
                                 <label class="custom-control-label" for="rumorSwitch">Show feedbacks</label>
                             </div>
                         </div>
-
                         <div class="tabsDataTable">
                             <table id="tabsDataTable" class="cell-border" style="width:100%">
                                 <thead>

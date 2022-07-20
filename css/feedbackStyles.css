@@ -324,9 +324,9 @@ h6 {
 }
 
 .sidebar .situation {
-    padding-top: 20px;
-    margin-top: 10px;
-    border-top: 1px solid #ccc;
+    padding-top: 5px;
+    /* margin-top: 10px; */
+    /* border-top: 1px solid #ccc; */
     margin-bottom: 10px;
 }
 
@@ -477,7 +477,7 @@ h6 {
 
 .mapping {
     height: 450px;
-    overflow-y: scroll;
+    /* overflow-y: scroll; */
 }
 
 .head {
@@ -546,6 +546,10 @@ table.dataTable tbody th.number {
     display: flex;
     justify-content: space-between;
     padding-bottom: 15px;
+}
+
+#invariantSection {
+    padding-top: 15px;
 }
 
 @media only screen and (max-width: 767px) {
