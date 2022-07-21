@@ -1134,21 +1134,22 @@ function updateVisuals() {
     if (nav == "home") {
         // get new data
         updateDataSourceFromSelects();
-        generateKeyFigures();
-        outbreakPie.load({
-            columns: getPieChartData('Emergency'),
-            unload: true
-        });
+        // generateKeyFigures();
 
+        // outbreakPie.load({
+        //     columns: getPieChartData('Emergency'),
+        //     unload: false
+        // });
+        const updatedDataFeedback = getPieChartData('Type');
         feedbackTypePie.load({
-            columns: getPieChartData('Type'),
+            columns: updatedDataFeedback,
             unload: true
         });
         var tlData = getTimelineData();
         //update timeline
         timeLineChart.load({
             columns: tlData,
-            unload: true
+            unload: false
         });
 
         //update datatable
@@ -1165,6 +1166,7 @@ function updateVisuals() {
         // get new data
 
         updateDataSourceFromSelects();
+
 
         updateTabsDataTableFromFilter();
         generateKeyFigures();
@@ -1231,8 +1233,9 @@ $('.navFeedback').on('click', function() {
     d3.select("#invariantSection").classed("hidden", false);
 
     $('#feedbackTypeSelect').val('all');
+
     updateDataSourceFromSelects();
-    createKeyFigInDonuts();
+
     //Add active class to the clicked item
     var nav = $('a', this).attr('value');
 
@@ -1244,7 +1247,7 @@ $('.navFeedback').on('click', function() {
         //filter tabs datatable
         updateTabsDataTable(nav);
 
-        createKeyFigInDonuts();
+        // createKeyFigInDonuts();
 
         nav = "tabsContent";
         // disable feedback type filter
@@ -1269,7 +1272,15 @@ $('.navFeedback').on('click', function() {
         d3.select("#invariantSection").classed("hidden", true);
     }
 
-    generateKeyFigures();
+    // generateKeyFigures();
+
+    const updatedDataFeedback = getPieChartData('Type');
+    // console.log(updatedDataFeedback)
+    feedbackTypePie.load({
+        columns: updatedDataFeedback,
+        unload: true
+    });
+    createKeyFigInDonuts();
 
     $('#' + nav).removeClass('hidden');
     $('a', this).addClass('active');
@@ -1342,6 +1353,7 @@ function getTabsDataTableSwitchData(data = globalFilteredCFData) {
             data[index][config.Feedback.Framework.Emergency],
             data[index][config.Feedback.Framework.Date],
             data[index][config.Feedback.Framework.Feedback_comment],
+            data[index][config.Feedback.Framework.Topic],
             data[index][config.Feedback.Framework.Aggregation],
             data[index][config.Feedback.Framework.Adm2],
             data[index][config.Feedback.Framework.Adm5]
@@ -1363,12 +1375,13 @@ function generateTabsSwitchDatatable() {
         data: data,
         "columns": [
             { "width": "1%", targets: 1 },
-            { "width": "2%", targets: 2 },
-            { "width": "2%", targets: 3 },
+            { "width": "1%", targets: 2 },
+            { "width": "3%", targets: 3 },
             { "width": "40%", targets: 4 },
-            { "width": "1%", targets: 5 },
-            { "width": "2%", targets: 6 },
-            { "width": "5%", targets: 7 }
+            { "width": "10%", targets: 5 },
+            { "width": "1%", targets: 6 },
+            { "width": "2%", targets: 7 },
+            { "width": "5%", targets: 8 }
         ],
         "columnDefs": [{
             "defaultContent": "-",
